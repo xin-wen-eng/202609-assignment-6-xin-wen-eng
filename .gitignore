@@ -1,0 +1,19 @@
+# Never commit your private key
+*.pem
+
+# Terraform working files - safe to ignore
+.terraform/
+*.tfstate.backup
+*.tfplan
+crash.log
+
+# IMPORTANT: terraform.tfstate is intentionally NOT ignored.
+# This assignment requires you to commit it so Gradescope can inspect it.
+# Do not add terraform.tfstate to this file.
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store

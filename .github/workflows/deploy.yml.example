@@ -1,0 +1,52 @@
+# CSYE 6225 - Assignment 6
+#
+# This is a REFERENCE COPY of the deployment workflow. To activate it:
+#   1. Rename this file to deploy.yml (remove the .example extension),
+#      or copy its contents into a new file at:
+#        .github/workflows/deploy.yml
+#   2. Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as repository
+#      secrets (Settings > Secrets and variables > Actions) before pushing.
+#
+# This workflow runs `terraform apply` on every push, then commits the
+# updated terraform.tfstate back to your repository - Gradescope reads
+# both instance IPs directly from that committed state file.
+#
+# IMPORTANT: the commit-back step includes "[skip ci]" in its message.
+# GitHub does not trigger a new workflow run for commits containing this
+# marker. Do not remove it, or a state-file commit would trigger another
+# apply, which would commit again, forever.
+
+name: Terraform Deploy
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.0"
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform apply -auto-approve
+
+      - name: Commit updated state file
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update terraform.tfstate [skip ci]"
+          file_pattern: "terraform/terraform.tfstate"

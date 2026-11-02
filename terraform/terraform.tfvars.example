@@ -1,0 +1,10 @@
+# Copy this file to terraform.tfvars and fill in your own values.
+# This is committed to your repo - it contains no secrets, and GitHub
+# Actions needs it to run `terraform apply` automatically.
+
+key_name = "REPLACE_WITH_YOUR_EC2_KEY_PAIR_NAME"
+
+# YOUR CHOICE: pick instance types based on the workload specs in the
+# assignment instructions, and justify your choices in JUSTIFICATION.md.
+api_instance_type    = "REPLACE_WITH_YOUR_CHOICE"
+worker_instance_type = "REPLACE_WITH_YOUR_CHOICE"
